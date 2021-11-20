@@ -1,6 +1,7 @@
 import LOGOImg from '../assets/images/logo.png'
 import googleIcon from '../assets/images/google-icon.svg'
 
+
 import '../styles/auth.scss'
 import { Button } from '../components/Button'
 
