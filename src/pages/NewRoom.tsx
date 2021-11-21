@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import '../styles/auth.scss'
 import { Button } from '../components/Button'
 
+import {AuthContextProvider} from '../contexts/AuthContext';
 export function NewRoom(){
     
 
