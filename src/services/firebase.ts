@@ -5,13 +5,13 @@ import 'firebase/compat/database';
 
 const firebaseConfig = {
 
-    apiKey: process.env.REACT_APP_API_KEY,
-    authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-    databaseURL: process.env.REACT_APP_DATABASE_URL,
-    projectId: process.env.REACT_APP_PROJECT_ID,
-    storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
-    messagingSenderId: process.env.REACT_APP_MASSAGING_SENDER_ID,
-    appId:process.env.REACT_APP_APP_ID
+    apiKey: 'AIzaSyAn7OmgPlfc93l77b_DmVCaDyi3SgziMB4',
+    authDomain: 'guide-7c8a0.firebaseapp.com',
+    databaseURL:'https://guide-7c8a0-default-rtdb.firebaseio.com',
+    projectId: 'guide-7c8a0',
+    storageBucket: 'guide-7c8a0.appspot.com',
+    messagingSenderId:'526668664406',
+    appId:'1:526668664406:web:10f0e44d34d453d9a8f5f7'
   
 };
   
