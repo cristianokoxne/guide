@@ -7,7 +7,6 @@ import '../styles/auth.scss'
 import { Button } from '../components/Button'
 import { useAuth } from '../hooks/useAuth';
 import { database } from '../services/firebase';
-import userEvent from '@testing-library/user-event';
 
 export function NewRoom(){
     

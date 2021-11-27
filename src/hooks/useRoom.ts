@@ -46,7 +46,7 @@ export function useRoom(roomId: string){
         roomRef.on('value', room=>{
 
             const databaseRoom =room.val();
-            const firebaseQuestions: FirebaseQuestions = databaseRoom.questions ?? {};
+            const firebaseQuestions: FirebaseQuestions = databaseRoom.questions??{};
             
             const parsedQuestions = Object.entries(firebaseQuestions ).map(([key, value]) =>{
                 return{
@@ -56,7 +56,7 @@ export function useRoom(roomId: string){
                     isHighlighted: value.isHighlighted,
                     isAnswered: value.isAnswered,
                     likeCount:Object.values(value.likes ?? {}).length,
-                    likedId: Object.entries(value.likes ?? {}).find(([key,like]) => like.authorId == user?.id)?.[0],
+                    likedId: Object.entries(value.likes ?? {}).find(([key,like]) => like.authorId === user?.id)?.[0],
                 }
                     
             })

@@ -4,20 +4,25 @@
     overflow: hidden;
 
     background: #fff;
-    border: 1px solid #835afd;
+    border: 1px solid #03989E;
     cursor: pointer;
 
     display: flex;
-
     div{
-        background:#835afd ;
+        background:#03989E ;
         padding: 0 12px;
         display: flex;
         justify-content: center;
         align-items: center;
+        >img{
+            height: 38px;
+            width: 30px;
+        }
     }
-
+  
+    
     span{
+        
         display: block;
         align-self: center;
         flex: 1;
