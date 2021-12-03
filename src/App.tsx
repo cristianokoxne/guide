@@ -1,27 +1,28 @@
+import {BrowserRouter, Route, Switch }from 'react-router-dom'
 
-import { Routes, Route } from "react-router";
-import { BrowserRouter } from "react-router-dom";
-import { Home } from "./pages/Home";
 import { NewRoom } from "./pages/NewRoom";
-import {AuthContextProvider} from './contexts/AuthContext';
-import { Room } from "./pages/Room";
-import { AdminRoom } from "./pages/AdminRoom";
+import { Home } from "./pages/Home";
+import { Room } from "./pages/Room"
+
+
+import{ AuthContextProvider} from './contexts/AuthContext';
+import { AdminRoom } from './pages/AdminRoom';
+
 
 function App() {
-
- 
+  
 
   return (
     <BrowserRouter>
-      <AuthContextProvider>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/rooms/new" element={<NewRoom />} />
-          <Route path="/rooms/:id" element={<Room />} />
-          <Route path ="/admin/rooms/:id" element ={<AdminRoom/>}></Route>
-        </Routes>
-        </AuthContextProvider>
-    </BrowserRouter> 
+      < AuthContextProvider>
+        <Switch>
+          <Route path ="/" exact component ={Home}></Route>
+          <Route path ="/rooms/new" component ={NewRoom}></Route>
+          <Route path ="/rooms/:id" component ={Room}></Route>
+          <Route path ="/admin/rooms/:id" component ={AdminRoom}></Route>
+        </Switch>
+      </AuthContextProvider>
+    </BrowserRouter>
   );
 }
 
