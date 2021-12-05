@@ -10,9 +10,6 @@ import { Question } from '../components/Questions';
 import { useRoom } from '../hooks/useRoom';
 import { FormEvent, useState } from 'react';
 
-
-
-
 type RoomParams ={
     id: string;
 }
@@ -23,6 +20,8 @@ export function Room(){
     const [newQuestion, setNewQuestion] = useState ('');
     const roomId =  params.id;
     const {title, questions} = useRoom( roomId); 
+    
+ 
 
     async function handleSendNewQuestion(event: FormEvent){
 
@@ -65,6 +64,7 @@ export function Room(){
 
     }
 
+
     return(
         <div id="page-room">
             <header>
@@ -81,7 +81,7 @@ export function Room(){
 
                 <form onSubmit={handleSendNewQuestion}>
                     <textarea 
-                        placeholder ="O que voê quer perguntar?"
+                        placeholder ="O que você quer perguntar?"
                         onChange ={event => setNewQuestion(event.target.value)}
                         value = {newQuestion}
                     />
