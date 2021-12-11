@@ -76,6 +76,14 @@ export function AdminRoom(){
             })
 
     }
+    async function handleHighlightQuestion(questionId: string, isHighlighted : boolean){
+        if(isHighlighted){
+            await database.ref(`rooms/${roomId}/questions/${questionId}`).update({isHighlighted:true});
+        }
+        else{
+            await database.ref(`rooms/${roomId}/questions/${questionId}`).update({isHighlighted:false});
+        }
+    }
       
         function afterOpenModal() {
           // references are now sync'd and can be accessed.
@@ -106,12 +114,7 @@ export function AdminRoom(){
 
     
 
-   /* async function handleHighlightQuestion(questionId: string)
-    {
-        await database.ref(`rooms/${roomId}/questions/${questionId}`).update({
-            isHighlit: true,
-        })
-    }*/
+ 
     return(
         <> 
         <Modal1
@@ -234,7 +237,12 @@ export function AdminRoom(){
                                 >
                                     <img src={deleteImg} alt="Remover pergunta" />
                                 </button>
-
+                                <button
+                                className={`highlight-button ${question.isHighlighted? 'starred' : ''}`}
+                                type = "button"
+                                aria-label = "Destacar pergunta"
+                                onClick={()=>handleHighlightQuestion(question.id,question.isHighlighted)}>
+                                </button>
 
                             </Question>
                         );
