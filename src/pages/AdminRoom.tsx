@@ -20,54 +20,44 @@ import Modal3 from 'react-modal';
 
 
 
-const customStyles = {
 
-    content: {
-      top: '50%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      marginRight: '-50%',
-      transform: 'translate(-50%, -50%)',
-      backgroundColor: 'rgba(255, 255, 255, 0.75)',
-      
-      
-    },
-}
 type RoomParams ={
     id: string;
 }
 export function AdminRoom(){
 
-   var id: string;
+   const [selectedQuestion, setSelectedQuestion] = useState('');
     const history = useHistory();
     const params = useParams<RoomParams>();
     const roomId =  params.id;
     const {title, questions} = useRoom( roomId);
 
+    const [setAuthor, author] = useState('');
+
+    const [modalIsOpen1, setIsOpen1] = useState(false);
+    const [modalIsOpen2, setIsOpen2] = useState(false);
+    const [modalIsOpen3, setIsOpen3] = useState(false);
+
+    const [newResp, setNewResp] = useState ('');
     
+    
+    
+    function openModal1() {setIsOpen1(true);}
+    function closeModal1() { setIsOpen1(false);}
+    
+    function openModal2() {
+        return setIsOpen2(true);
+    }
+    function closeModal2() {setIsOpen2(false);}
 
-        
-        const [modalIsOpen1, setIsOpen1] = useState(false);
-        const [modalIsOpen2, setIsOpen2] = useState(false);
-        const [modalIsOpen3, setIsOpen3] = useState(false);
-        
-        
-        
-        function openModal1() {setIsOpen1(true);}
-        function closeModal1() { setIsOpen1(false);}
-       
-        function openModal2() {
-            return setIsOpen2(true);
-        }
-        function closeModal2() {setIsOpen2(false);}
+    function openModal3() {setIsOpen3(true);}
+    function closeModal3() { setIsOpen3(false);}
 
-        function openModal3() {setIsOpen3(true);}
-        function closeModal3() { setIsOpen3(false);}
-
-    async function responderPergunta()
-    {
+    function responderPergunta(authorName: string){
+        
+        author(authorName);
         openModal2();
+       
         
     }
     async function marcarRespondida(questionID: string){
@@ -76,48 +66,40 @@ export function AdminRoom(){
             })
 
     }
-      
-        function afterOpenModal() {
-          // references are now sync'd and can be accessed.
-
-        }
-      
+   
         
-        async function handleDeleteSala()
-        {
-            await database.ref(`rooms/${roomId}`).update(
-                {
-                    endesAt:new Date(),
-                }
-            )
-            history.push('/');
-        }
+    async function handleDeleteSala()
+    {
+        await database.ref(`rooms/${roomId}`).update(
+            {
+                endesAt:new Date(),
+            }
+        )
+        history.push('/');
+    }
 
     async function handleDeleteQuestion(questionId: string)
     {
         openModal3();
-        eval ("questionId = 'id';");
-           
+        setSelectedQuestion(questionId);
+        
+
     }
-    async function excluirPergunta(id: string){
-        await database.ref(`rooms/${roomId}/questions/${id}`).remove();
+    
+    async function excluirPergunta(){
+        
+
+        await database.ref(`rooms/${roomId}/questions/${selectedQuestion}`).remove();
+        closeModal3();
     }
     
 
-    
-
-   /* async function handleHighlightQuestion(questionId: string)
-    {
-        await database.ref(`rooms/${roomId}/questions/${questionId}`).update({
-            isHighlit: true,
-        })
-    }*/
     return(
         <> 
         <Modal1
             //className ="modalDelete"
             isOpen={modalIsOpen1}
-            onAfterOpen={afterOpenModal}
+            //onAfterOpen={afterOpenModal}
             onRequestClose={closeModal1}
             className = "excluirSala"
             contentLabel="Example Modal"
@@ -130,7 +112,7 @@ export function AdminRoom(){
             
             <aside>
                 <button  className ="b1" onClick ={closeModal1}> Cancelar</button>
-                <button   className ="b2"onClick={() => handleDeleteSala()}> Sim, encerrar</button>
+                <button   className ="b2"onClick={() =>  handleDeleteSala() }> Sim, encerrar</button>
             </aside>
             
 
@@ -138,14 +120,14 @@ export function AdminRoom(){
         <Modal2
             //className ="modalDelete"
             isOpen={modalIsOpen2}
-            onAfterOpen={afterOpenModal}
+            //onAfterOpen={afterOpenModal}
             onRequestClose={closeModal2}
             className = "modalResposta"
             contentLabel="Example Modal"
         > 
             <aside>
-                <h1>Responder a: </h1>
-                <button  > Enviar </button>
+                <h1>Responder a: {setAuthor} </h1>
+                <button> Enviar </button>
             </aside>
             
             
@@ -158,10 +140,11 @@ export function AdminRoom(){
         <Modal3
             //className ="modalDelete"
             isOpen={modalIsOpen3}
-            onAfterOpen={afterOpenModal}
+            //onAfterOpen={afterOpenModal}
             onRequestClose={closeModal3}
             contentLabel="Example Modal"
             className ="excluirPergunta"
+            
         > 
             <div>
                 <img src={deleteImg} alt="icone de deletar" />
@@ -173,7 +156,7 @@ export function AdminRoom(){
             <aside>
                
                 <button  className ="b1" onClick ={closeModal3}> Cancelar</button>
-                <button className ="b2" onClick={()=>excluirPergunta(id)}>  Sim, excluir</button>
+                <button className ="b2" onClick={() => excluirPergunta()}>  Sim, excluir</button>
             </aside>
             
 
@@ -222,7 +205,7 @@ export function AdminRoom(){
                                         </button>
                                         <button
                                             type='button'
-                                            onClick={() => responderPergunta()}
+                                            onClick={() => responderPergunta(question.author.name)}
                                         >
                                             <img src={answerImg} alt="Dar destaque a pergunta" />
                                         </button>

@@ -1,8 +1,8 @@
 .question{
-    background: #fefefe;
+    background: #f0efef;
     border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(0,0,0, 0.04);
-
+    box-shadow: 0 50px 22px rgba(241, 241, 241, 0.04);
+    margin-top: 25px;
     padding: 24px;
 
     & + .question{
@@ -79,5 +79,46 @@
         }
     }
 
-
+    
+}
+.resposta{
+    display: grid;
+    background-color: #03989E;
+    border-radius: 8px;
+    box-shadow: 1 2px 12px rgba(0,0,0, 0.04);
+    margin-top: 10px;
+    justify-content: space-between;
+    margin-left: 50%;
+  
+    p{
+        margin: 10px;
+        color: #fff;
+        height: 100%;
+    }
+    .dados{
+        display: grid;
+        width: 100%;
+        align-items: end;
+        justify-self: flex-end;
+      
+         aside{
+            
+             display: flex;
+             margin: 10px;
+             align-items: end;
+             justify-self: flex-end;
+          
+            p{
+                font-size: small;
+                margin-top: 10px;
+            }
+            img{
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+            }
+        }   
+        
+    }
+    
 }
