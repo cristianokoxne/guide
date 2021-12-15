@@ -15,6 +15,12 @@ type QuestionType ={
     isHighlighted: boolean;
     likeCount: number;
     likedId: string | undefined;
+    resposta?: string;
+    authorResp?:{
+        name: string;
+        avatar: string;
+    };
+    estaRespondida: boolean;
 
 }
 
@@ -30,6 +36,12 @@ type FirebaseQuestions = Record<string, {
     likes: Record<string, {
         authorId: string;
     }>
+    resposta?: string;
+    authorResp?:{
+        name: string;
+        avatar: string;
+    };
+    estaRespondida: boolean;
 
 }>
 
@@ -57,6 +69,9 @@ export function useRoom(roomId: {}){
                     isAnswered: value.isAnswered,
                     likeCount:Object.values(value.likes ?? {}).length,
                     likedId: Object.entries(value.likes ?? {}).find(([key,like]) => like.authorId === user?.id)?.[0],
+                    resposta: value.resposta,
+                    authorResp:value.authorResp,
+                    estaRespondida: value.estaRespondida,
                 }
                     
             })

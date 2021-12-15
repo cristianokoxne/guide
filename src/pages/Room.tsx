@@ -44,7 +44,7 @@ export function Room(){
             isAnswered: false
         }
 
-        await database.ref(`rooms/${roomId}/questions`).push(question);
+        await database.ref(`rooms/${roomId}/questions/`).push(question);
 
         setNewQuestion('');
     }
@@ -69,7 +69,7 @@ export function Room(){
         <div id="page-room">
             <header>
                 <div className ="content">
-                    <img src={logoImg} alt="letmeask" />
+                    <img src={logoImg} alt="guide" />
                     <RoomCode code = {roomId}></RoomCode>
                 </div>
             </header>
@@ -110,7 +110,10 @@ export function Room(){
                             author ={question.author}
                             isAnswered ={question.isAnswered}
                             isHighlighted ={question.isHighlighted}
-                        
+                            resposta= {question.resposta}
+                            authorResp={question.authorResp}
+                            estaRespondida ={question.estaRespondida}
+                                                    
                         >
                             {!question.isAnswered && (
                                 <button 

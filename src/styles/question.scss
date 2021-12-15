@@ -87,7 +87,6 @@
     border-radius: 8px;
     box-shadow: 1 2px 12px rgba(0,0,0, 0.04);
     margin-top: 10px;
-    justify-content: space-between;
     margin-left: 50%;
   
     p{
@@ -99,7 +98,7 @@
         display: grid;
         width: 100%;
         align-items: end;
-        justify-self: flex-end;
+        justify-self:last baseline;
       
          aside{
             
@@ -116,6 +115,7 @@
                 width: 32px;
                 height: 32px;
                 border-radius: 50%;
+                justify-self: end;
             }
         }   
         

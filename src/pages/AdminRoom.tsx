@@ -7,7 +7,7 @@ import {useHistory, useParams} from 'react-router-dom'
 import checkImg from '../assets/images/check.svg';
 import answerImg from '../assets/images/answer.svg';
 
-import {useState} from 'react'
+import {FormEvent, useState} from 'react'
 import { Question } from '../components/Questions';
 import { useRoom } from '../hooks/useRoom';
 import marcaX from '../assets/images/marca-x.png'
@@ -16,16 +16,18 @@ import { database } from '../services/firebase';
 import Modal1 from 'react-modal';
 import Modal2 from 'react-modal';
 import Modal3 from 'react-modal';
+import { useAuth } from '../hooks/useAuth';
 
 
-
-
+/*regra escrever no fire base*/
+/*"auth != null && (!data.exists() || data.parent().child('authorId').val() == auth.id)||"*/
 
 type RoomParams ={
     id: string;
 }
 export function AdminRoom(){
 
+    const [respQuestion, setRespQuestion] = useState('');
    const [selectedQuestion, setSelectedQuestion] = useState('');
     const history = useHistory();
     const params = useParams<RoomParams>();
@@ -39,25 +41,35 @@ export function AdminRoom(){
     const [modalIsOpen3, setIsOpen3] = useState(false);
 
     const [newResp, setNewResp] = useState ('');
+
+    const [avatar, setAvatar] = useState ('');
     
+    const {user} =useAuth();
     
-    
-    function openModal1() {setIsOpen1(true);}
+    function openModal1() {
+        setIsOpen1(true);
+        console.log(roomId);
+    }
     function closeModal1() { setIsOpen1(false);}
     
-    function openModal2() {
-        return setIsOpen2(true);
-    }
+    function openModal2() {return setIsOpen2(true);}
     function closeModal2() {setIsOpen2(false);}
 
     function openModal3() {setIsOpen3(true);}
     function closeModal3() { setIsOpen3(false);}
 
-    function responderPergunta(authorName: string){
+
+
+    function responderPergunta(authorName: string, quenstionId: string, respondida: boolean){
         
+        setRespQuestion(quenstionId);
         author(authorName);
-        openModal2();
-       
+        if(respondida === true){
+            return
+        }
+        else{
+            openModal2();
+        }
         
     }
     async function marcarRespondida(questionID: string){
@@ -66,10 +78,37 @@ export function AdminRoom(){
             })
 
     }
-   
+    async function SendNewResposta(event: FormEvent){
+
+        event.preventDefault();
+
+        if(newResp.trim()===' ')
+        {
+            return;
+        }
+        if(!user){
+            throw new Error('You must be logged in');
+        }
+        const question ={
+            resposta: newResp,
+            authorResp: {
+                name: user.name,
+                avatar: user.avatar
+            },
+            estaRespondida: true,
+        }
+        console.log(respQuestion);
+        await database.ref(`rooms/${roomId}/questions/${respQuestion}`).update(question);
         
+        setNewResp('');
+        closeModal2();
+        
+    }
+   
+
     async function handleDeleteSala()
     {
+        
         await database.ref(`rooms/${roomId}`).update(
             {
                 endesAt:new Date(),
@@ -127,12 +166,14 @@ export function AdminRoom(){
         > 
             <aside>
                 <h1>Responder a: {setAuthor} </h1>
-                <button> Enviar </button>
+                <button onClick ={SendNewResposta}> Enviar </button>
             </aside>
             
             
                 <textarea  
                     placeholder ="   Insira a sua respsosta..."
+                    onChange ={event => setNewResp(event.target.value)}
+                    value = {newResp}
                 />
 
         </Modal2>
@@ -192,6 +233,9 @@ export function AdminRoom(){
                                 author={question.author}
                                 isAnswered={question.isAnswered}
                                 isHighlighted={question.isHighlighted}
+                                resposta= {question.resposta}
+                                authorResp={question.authorResp}
+                                estaRespondida={question.estaRespondida}
 
                             >
                                 {!question.isAnswered && (
@@ -205,7 +249,7 @@ export function AdminRoom(){
                                         </button>
                                         <button
                                             type='button'
-                                            onClick={() => responderPergunta(question.author.name)}
+                                            onClick={() => responderPergunta(question.author.name, question.id, question.estaRespondida)}
                                         >
                                             <img src={answerImg} alt="Dar destaque a pergunta" />
                                         </button>
@@ -217,7 +261,6 @@ export function AdminRoom(){
                                 >
                                     <img src={deleteImg} alt="Remover pergunta" />
                                 </button>
-
 
                             </Question>
                         );
