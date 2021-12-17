@@ -102,7 +102,6 @@ export function Room(){
 
                 <div className ="question-list">
                 {questions.map(question =>{
-
                     return(
                         <Question
                             key={question.id}
