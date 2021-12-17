@@ -16,6 +16,7 @@ import { database } from '../services/firebase';
 import Modal1 from 'react-modal';
 import Modal2 from 'react-modal';
 import Modal3 from 'react-modal';
+import Modal4 from 'react-modal';
 import { useAuth } from '../hooks/useAuth';
 
 
@@ -39,10 +40,10 @@ export function AdminRoom(){
     const [modalIsOpen1, setIsOpen1] = useState(false);
     const [modalIsOpen2, setIsOpen2] = useState(false);
     const [modalIsOpen3, setIsOpen3] = useState(false);
-
+    const [modalIsOpen4, setIsOpen4] = useState(false);
     const [newResp, setNewResp] = useState ('');
 
-    const [avatar, setAvatar] = useState ('');
+
     
     const {user} =useAuth();
     
@@ -57,6 +58,8 @@ export function AdminRoom(){
 
     function openModal3() {setIsOpen3(true);}
     function closeModal3() { setIsOpen3(false);}
+    function openModal4() {setIsOpen4(true);}
+    function closeModal4() { setIsOpen4(false);}
 
 
 
