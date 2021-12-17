@@ -53,7 +53,9 @@ export function AdminRoom(){
     }
     function closeModal1() { setIsOpen1(false);}
     
-    function openModal2() {return setIsOpen2(true);}
+    function openModal2() {
+        closeModal4();
+        return setIsOpen2(true);}
     function closeModal2() {setIsOpen2(false);}
 
     function openModal3() {setIsOpen3(true);}
@@ -68,7 +70,9 @@ export function AdminRoom(){
         setRespQuestion(quenstionId);
         author(authorName);
         if(respondida === true){
-            return
+            openModal4();
+            return;
+
         }
         else{
             openModal2();
@@ -85,7 +89,7 @@ export function AdminRoom(){
 
         event.preventDefault();
 
-        if(newResp.trim()===' ')
+        if(newResp===" ")
         {
             return;
         }
@@ -172,12 +176,13 @@ export function AdminRoom(){
                 <button onClick ={SendNewResposta}> Enviar </button>
             </aside>
             
-            
+            <form >
                 <textarea  
                     placeholder ="   Insira a sua respsosta..."
                     onChange ={event => setNewResp(event.target.value)}
                     value = {newResp}
                 />
+            </form>
 
         </Modal2>
 
@@ -205,6 +210,26 @@ export function AdminRoom(){
             
 
         </Modal3>
+        <Modal4
+             //className ="modalDelete"
+             isOpen={modalIsOpen4}
+             //onAfterOpen={afterOpenModal}
+             onRequestClose={closeModal4}
+             contentLabel="Example Modal"
+             className ="perguntaResp"
+        >
+            <div>
+                <img src="https://img.icons8.com/ios/50/000000/stop-gesture.png"/>
+                <h1>Pergunta ja respondida</h1>
+                <p>Deseja mudar sua resposta?</p>
+            </div>
+            <aside>
+               
+               <button  className ="b1" onClick ={closeModal4}> Cancelar</button>
+               <button className ="b2" onClick={() => openModal2()}>  Sim, mudar</button>
+           </aside>
+
+        </Modal4>
         
         <div id="page-room">
             <header>
