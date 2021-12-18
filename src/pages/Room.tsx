@@ -3,36 +3,48 @@ import logoImg from '../assets/images/logo.png';
 import { Button } from '../components/Button';
 import { RoomCode } from '../contexts/RoomCode';
 import '../styles/room.scss';
-import {useParams} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth';
 import { database } from '../services/firebase';
 import { Question } from '../components/Questions';
 import { useRoom } from '../hooks/useRoom';
 import { FormEvent, useState } from 'react';
+import Modal1 from 'react-modal';
 
 type RoomParams ={
     id: string;
 }
 export function Room(){
 
+
+    const history = useHistory();
     const {user} =useAuth();
     const params = useParams<RoomParams>();
     const [newQuestion, setNewQuestion] = useState ('');
     const roomId =  params.id;
     const {title, questions} = useRoom( roomId); 
+    const { signInWithGoogle } = useAuth()
+    const [modalIsOpen1, setIsOpen1] = useState(false);
     
- 
-
+    
+    function openModal1() {
+        setIsOpen1(true);
+    }
+    function closeModal1() { setIsOpen1(false);}
+    async function voltar(){
+        history.push('/');
+    }
     async function handleSendNewQuestion(event: FormEvent){
 
         event.preventDefault();
 
-        if(newQuestion.trim()===' ')
+        if(newQuestion.trim()==='')
         {
             return;
         }
         if(!user){
-            throw new Error('You must be logged in');
+            openModal1();
+            return;
         }
         const question ={
             content: newQuestion,
@@ -48,7 +60,11 @@ export function Room(){
 
         setNewQuestion('');
     }
-
+    async  function loginGoogle(){
+        
+        await signInWithGoogle();
+   
+    }
     async function handleLikeQuestion(questionId: string, likedId : string|undefined){
         
         if(likedId)
@@ -66,10 +82,29 @@ export function Room(){
 
 
     return(
+        <>
+        <Modal1
+                //className ="modalDelete"
+                isOpen={modalIsOpen1}
+                //onAfterOpen={afterOpenModal}
+                onRequestClose={closeModal1}
+                className = "erro"
+                contentLabel="Example Modal"
+                > 
+               <div>
+                    <h1><strong>Erro</strong></h1>
+                    <p>Voce precisa estar logado para perguntar.</p>
+               </div>
+                
+                <aside>
+                    <button  className ="b1" onClick ={closeModal1}> OK</button>
+                </aside>
+            </Modal1>
         <div id="page-room">
             <header>
                 <div className ="content">
-                    <img src={logoImg} alt="guide" />
+                
+                    <img src={logoImg} onClick={() =>voltar()} alt="guide" />
                     <RoomCode code = {roomId}></RoomCode>
                 </div>
             </header>
@@ -93,7 +128,7 @@ export function Room(){
                             
                             </div> 
                         ) : (
-                            <span> Para Enviar uma pergunta, <button>faça seu login</button>.</span>
+                            <span> Para Enviar uma pergunta, <button onClick={() =>loginGoogle()}>faça seu login</button>.</span>
                         ) }
 
                         <Button type ="submit">Enviar pergunta</Button>
@@ -137,6 +172,7 @@ export function Room(){
 
             </main>
         </div>
+    </>               
     );
 
 }

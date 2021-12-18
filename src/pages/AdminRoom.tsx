@@ -17,7 +17,8 @@ import Modal1 from 'react-modal';
 import Modal2 from 'react-modal';
 import Modal3 from 'react-modal';
 import Modal4 from 'react-modal';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../hooks/useAuth'
+import ilustra from '../assets/images/ilustration.png'
 
 
 /*regra escrever no fire base*/
@@ -89,7 +90,7 @@ export function AdminRoom(){
 
         event.preventDefault();
 
-        if(newResp===" ")
+        if(newResp==='')
         {
             return;
         }
@@ -118,7 +119,7 @@ export function AdminRoom(){
         
         await database.ref(`rooms/${roomId}`).update(
             {
-                endesAt:new Date(),
+                endedAt:new Date(),
             }
         )
         history.push('/');
@@ -134,9 +135,11 @@ export function AdminRoom(){
     
     async function excluirPergunta(){
         
-
         await database.ref(`rooms/${roomId}/questions/${selectedQuestion}`).remove();
         closeModal3();
+    }
+    async function voltar(){
+        history.push('/');
     }
     
 
@@ -234,7 +237,7 @@ export function AdminRoom(){
         <div id="page-room">
             <header>
                 <div className="content">
-                    <img src={logoImg} alt="guide" />
+                    <img src={logoImg} onClick={() =>voltar()} alt="guide" />
 
                     <div className="div">
                         <RoomCode code={roomId}></RoomCode>
@@ -250,7 +253,9 @@ export function AdminRoom(){
                     <h1>{title}</h1>
                     {questions.length > 0 && <span>{questions.length} pergunta(s)</span>}
                 </div>
-
+                {questions.length === 0 && (
+                <img src={ilustra} alt="ilustração sem perguntas" />
+                )}
                 <div className="question-list">
                     {questions.map(question => 
                         {
@@ -295,6 +300,7 @@ export function AdminRoom(){
                     })}
 
                 </div>
+                
 
             </main>
         </div></>
