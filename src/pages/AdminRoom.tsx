@@ -17,7 +17,7 @@ import Modal1 from 'react-modal';
 import Modal2 from 'react-modal';
 import Modal3 from 'react-modal';
 import Modal4 from 'react-modal';
-import { useAuth } from '../hooks/useAuth'
+import { useAuth } from '../hooks/useAuth';
 import ilustra from '../assets/images/ilustration.png'
 
 
@@ -90,7 +90,7 @@ export function AdminRoom(){
 
         event.preventDefault();
 
-        if(newResp==='')
+        if(newResp===" ")
         {
             return;
         }
@@ -135,11 +135,9 @@ export function AdminRoom(){
     
     async function excluirPergunta(){
         
+
         await database.ref(`rooms/${roomId}/questions/${selectedQuestion}`).remove();
         closeModal3();
-    }
-    async function voltar(){
-        history.push('/');
     }
     
 
@@ -233,11 +231,11 @@ export function AdminRoom(){
            </aside>
 
         </Modal4>
-        
-        <div id="page-room">
+      
+<div id="page-room">
             <header>
                 <div className="content">
-                    <img src={logoImg} onClick={() =>voltar()} alt="guide" />
+                    <img src={logoImg} alt="guide" />
 
                     <div className="div">
                         <RoomCode code={roomId}></RoomCode>
@@ -254,11 +252,11 @@ export function AdminRoom(){
                     {questions.length > 0 && <span>{questions.length} pergunta(s)</span>}
                 </div>
                 {questions.length === 0 && (
-                <img src={ilustra} alt="ilustração sem perguntas" />
+                    <img src={ilustra} alt="ilustração sem perguntas" />
                 )}
                 <div className="question-list">
-                    {questions.map(question => 
-                        {
+                    
+                    {questions.sort((a,b)=> {return(a.likeCount>=b.likeCount?-1:1)}).map(question=>{
                         return (
                             <Question
                                 key={question.id}
@@ -300,7 +298,6 @@ export function AdminRoom(){
                     })}
 
                 </div>
-                
 
             </main>
         </div></>

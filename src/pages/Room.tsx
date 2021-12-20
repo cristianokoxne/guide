@@ -3,48 +3,76 @@ import logoImg from '../assets/images/logo.png';
 import { Button } from '../components/Button';
 import { RoomCode } from '../contexts/RoomCode';
 import '../styles/room.scss';
-import {useHistory, useParams} from 'react-router-dom'
+import {useParams} from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth';
 import { database } from '../services/firebase';
 import { Question } from '../components/Questions';
 import { useRoom } from '../hooks/useRoom';
 import { FormEvent, useState } from 'react';
-import Modal1 from 'react-modal';
+import { ClassLikeDeclarationBase } from 'typescript';
+
 
 type RoomParams ={
     id: string;
 }
 export function Room(){
 
-
-    const history = useHistory();
     const {user} =useAuth();
     const params = useParams<RoomParams>();
     const [newQuestion, setNewQuestion] = useState ('');
     const roomId =  params.id;
-    const {title, questions} = useRoom( roomId); 
-    const { signInWithGoogle } = useAuth()
-    const [modalIsOpen1, setIsOpen1] = useState(false);
+    const {title, questions} = useRoom( roomId);
+    let filter=2;
+    //filter=0 -> sem filtro
+    //filter=1 -> só as destacadas
+    //filter=2 ->por ordem de like
+    //filter=3 ->só as respondidas 
     
+ 
+
+    function showquestion(question: any){
+        return(
+            <Question
+                key={question.id}
+                content={question.content}
+                author ={question.author}
+                isAnswered ={question.isAnswered}
+                isHighlighted ={question.isHighlighted}
+                resposta= {question.resposta}
+                authorResp={question.authorResp}
+                estaRespondida ={question.estaRespondida}
+                                        
+            >
+                {!question.isAnswered && (
+                    <button 
+                    className = {`like-button ${question.likedId ? 'liked' : ''} `}
+                    type ="button"
+                    aria-label ="Marcar como gostei"
+                    onClick={()=>handleLikeQuestion(question.id, question.likedId)}
+                    >
+                    { question.likeCount>0 && <span>{question.likeCount}</span>}
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 22H4C3.46957 22 2.96086 21.7893 2.58579 21.4142C2.21071 21.0391 2 20.5304 2 20V13C2 12.4696 2.21071 11.9609 2.58579 11.5858C2.96086 11.2107 3.46957 11 4 11H7M14 9V5C14 4.20435 13.6839 3.44129 13.1213 2.87868C12.5587 2.31607 11.7956 2 11 2L7 11V22H18.28C18.7623 22.0055 19.2304 21.8364 19.5979 21.524C19.9654 21.2116 20.2077 20.7769 20.28 20.3L21.66 11.3C21.7035 11.0134 21.6842 10.7207 21.6033 10.4423C21.5225 10.1638 21.3821 9.90629 21.1919 9.68751C21.0016 9.46873 20.7661 9.29393 20.5016 9.17522C20.2371 9.0565 19.9499 8.99672 19.66 9H14Z" stroke="#737380" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
     
-    function openModal1() {
-        setIsOpen1(true);
+                    
+                </button>
+                )}
+            </Question>
+        );
     }
-    function closeModal1() { setIsOpen1(false);}
-    async function voltar(){
-        history.push('/');
-    }
+
+
     async function handleSendNewQuestion(event: FormEvent){
 
         event.preventDefault();
 
-        if(newQuestion.trim()==='')
+        if(newQuestion.trim()===' ')
         {
             return;
         }
         if(!user){
-            openModal1();
-            return;
+            throw new Error('You must be logged in');
         }
         const question ={
             content: newQuestion,
@@ -60,11 +88,7 @@ export function Room(){
 
         setNewQuestion('');
     }
-    async  function loginGoogle(){
-        
-        await signInWithGoogle();
-   
-    }
+
     async function handleLikeQuestion(questionId: string, likedId : string|undefined){
         
         if(likedId)
@@ -82,29 +106,10 @@ export function Room(){
 
 
     return(
-        <>
-        <Modal1
-                //className ="modalDelete"
-                isOpen={modalIsOpen1}
-                //onAfterOpen={afterOpenModal}
-                onRequestClose={closeModal1}
-                className = "erro"
-                contentLabel="Example Modal"
-                > 
-               <div>
-                    <h1><strong>Erro</strong></h1>
-                    <p>Voce precisa estar logado para perguntar.</p>
-               </div>
-                
-                <aside>
-                    <button  className ="b1" onClick ={closeModal1}> OK</button>
-                </aside>
-            </Modal1>
         <div id="page-room">
             <header>
                 <div className ="content">
-                
-                    <img src={logoImg} onClick={() =>voltar()} alt="guide" />
+                    <img src={logoImg} alt="guide" />
                     <RoomCode code = {roomId}></RoomCode>
                 </div>
             </header>
@@ -128,51 +133,33 @@ export function Room(){
                             
                             </div> 
                         ) : (
-                            <span> Para Enviar uma pergunta, <button onClick={() =>loginGoogle()}>faça seu login</button>.</span>
+                            <span> Para Enviar uma pergunta, <button>faça seu login</button>.</span>
                         ) }
 
                         <Button type ="submit">Enviar pergunta</Button>
                     </div>
                 </form>
-
+               
                 <div className ="question-list">
-                {questions.map(question =>{
-                    return(
-                        <Question
-                            key={question.id}
-                            content={question.content}
-                            author ={question.author}
-                            isAnswered ={question.isAnswered}
-                            isHighlighted ={question.isHighlighted}
-                            resposta= {question.resposta}
-                            authorResp={question.authorResp}
-                            estaRespondida ={question.estaRespondida}
-                                                    
-                        >
-                            {!question.isAnswered && (
-                                <button 
-                                className = {`like-button ${question.likedId ? 'liked' : ''} `}
-                                type ="button"
-                                aria-label ="Marcar como gostei"
-                                onClick={()=>handleLikeQuestion(question.id, question.likedId)}
-                                >
-                                { question.likeCount>0 && <span>{question.likeCount}</span>}
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M7 22H4C3.46957 22 2.96086 21.7893 2.58579 21.4142C2.21071 21.0391 2 20.5304 2 20V13C2 12.4696 2.21071 11.9609 2.58579 11.5858C2.96086 11.2107 3.46957 11 4 11H7M14 9V5C14 4.20435 13.6839 3.44129 13.1213 2.87868C12.5587 2.31607 11.7956 2 11 2L7 11V22H18.28C18.7623 22.0055 19.2304 21.8364 19.5979 21.524C19.9654 21.2116 20.2077 20.7769 20.28 20.3L21.66 11.3C21.7035 11.0134 21.6842 10.7207 21.6033 10.4423C21.5225 10.1638 21.3821 9.90629 21.1919 9.68751C21.0016 9.46873 20.7661 9.29393 20.5016 9.17522C20.2371 9.0565 19.9499 8.99672 19.66 9H14Z" stroke="#737380" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                </svg>
-
-                                
-                            </button>
-                            )}
-                        </Question>
-                    );
-                    })} 
+                {
+                    filter===2?(questions.sort((a,b)=> {return(a.likeCount>=b.likeCount?-1:1)})).map(question=>{
+                        return showquestion(question);}):questions.map(question =>{
+                    if(filter===1 && question.isHighlighted){
+                        return showquestion(question);
+                    }
+                    if(filter===3 && question.estaRespondida){
+                        return showquestion(question);
+                    }
+                    if(filter===0)
+                        return showquestion(question);
+                    return null;
+                    })
+                } 
 
                 </div>
 
             </main>
         </div>
-    </>               
     );
 
 }
